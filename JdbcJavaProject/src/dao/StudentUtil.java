@@ -61,7 +61,13 @@ public class StudentUtil {
 
         stmt = connectToDb().createStatement();
         String query = String.format("DELETE FROM Student WHERE stu_id=%d", id);
-        return stmt.executeUpdate(query) > 0;
+        if (stmt.executeUpdate(query) > 0) {
+            // alter table student auto_increment = 1
+            stmt.executeUpdate("alter table student auto_increment = 1");
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
