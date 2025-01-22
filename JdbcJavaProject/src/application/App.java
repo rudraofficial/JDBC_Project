@@ -1,8 +1,5 @@
 package application;
 
-//getting two errors as i entered two words name then two statemet printing automatically
-//another is in databse autoincrement
-//in case search by student it always showing exception
 
 import java.io.File;
 import java.io.IOException;
