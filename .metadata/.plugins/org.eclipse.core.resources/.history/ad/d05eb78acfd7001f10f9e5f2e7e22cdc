@@ -1,5 +1,0 @@
-package conn;
-
-public class JdbcConnec {
-
-}
