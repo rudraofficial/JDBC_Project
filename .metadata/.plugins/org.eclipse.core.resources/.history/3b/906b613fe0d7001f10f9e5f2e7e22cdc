@@ -1,0 +1,50 @@
+package dao;
+
+import conn.JdbcConnec;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class StudentUtil {
+    
+    private static Connection connectToDb() {
+        return JdbcConnec.getInstance().getConn();
+    }
+    
+    public static boolean createStudentTable() throws SQLException {
+        Statement stmt = connectToDb().createStatement();
+        return !stmt.execute("CREATE TABLE if not exists Student(stu_id int primary key auto_increment, Stud_Name varchar(20) not null, Stud_course varchar(15), Stu_age tinyint, pro_Img mediumblob);");
+    }
+
+    public static boolean updateStudent(int id, String name, String course, byte age) throws SQLException {
+        Statement stmt = connectToDb().createStatement();
+        String query = String.format("UPDATE Student SET Stud_Name='%s', Stud_course='%s', Stu_age=%d WHERE stu_id=%d", name, course, age, id);
+        return stmt.executeUpdate(query) > 0;
+    }
+
+    public static boolean deleteStudent(int id) throws SQLException {
+        Statement stmt = connectToDb().createStatement();
+        String query = String.format("DELETE FROM Student WHERE stu_id=%d", id);
+        return stmt.executeUpdate(query) > 0;
+    }
+
+    public static ResultSet searchStudentById(int id) throws SQLException {
+        Statement stmt = connectToDb().createStatement();
+        String query = String.format("SELECT * FROM Student WHERE stu_id=%d", id);
+        return stmt.executeQuery(query);
+    }
+    public static String uploadPhoto(File file, int id) throws SQLException, IOException {
+    	PreparedStatement stmt = connectToDb().prepareStatement("update student set pro_img = ? where stu_id = ?");
+    	stmt.setInt(2, id);
+    	stmt.setBinaryStream(1, new FileInputStream(file), new FileInputStream(file).available());
+    	
+		return stmt.executeUpdate() >= 1? "Photo Uploaded" : "Error Not Uploaded Please try again";
+    	
+    }
+}
